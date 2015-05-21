@@ -19,4 +19,4 @@ def print_email_if_available(github_members):
 
 if __name__ == '__main__':
     print_email_if_available(github_client.get_members(
-        sys.argv[1], GITHUB_BASE_URL, ORG_NAME))
+        sys.argv[1], GITHUB_BASE_URL, ORG_NAME, 'spotify-dev'))

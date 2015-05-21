@@ -6,11 +6,11 @@ class GithubClient(object):
         self.auth_token = auth_token
         self.github_base_url = github_base_url
 
-    def get_owners_team(self, org_name):
+    def get_owners_team(self, org_name, team_name):
         owners_team = None
         url = '%s/orgs/%s/teams' % (self.github_base_url, org_name)
         for team in self.traverse_pagination(url):
-            if team.get('name') == 'Owners':
+            if team.get('name') == team_name:
                 owners_team = team
         if not owners_team:
             raise Exception('Failed to find owners team in org ' + org_name)
@@ -35,8 +35,8 @@ class GithubClient(object):
         return result.json()
 
 
-def get_members(auth_token, github_base_url, org_name):
+def get_members(auth_token, github_base_url, org_name, team_name='Owners'):
     client = GithubClient(auth_token, github_base_url)
     url = "%s/teams/%d/members" % (
-        github_base_url, client.get_owners_team(org_name).get('id'))
+        github_base_url, client.get_owners_team(org_name, team_name).get('id'))
     return (m['login'] for m in client.traverse_pagination(url))
