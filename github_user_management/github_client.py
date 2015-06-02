@@ -34,6 +34,19 @@ class GithubClient(object):
             return None
         return result.json()
 
+    def get_key(self, username):
+        result = self.get("%s/users/%s/keys" % ( self.github_base_url, username))
+        if result.status_code == 404:
+            raise StopIteration
+        for i in result.json():
+            yield i['key'], i['id']
+
+def yield_org_keys(auth_token, github_base_url, org_name):
+    client = GithubClient(auth_token, github_base_url)
+    url = "%s/orgs/%s/members" % (github_base_url, org_name)
+    for member in client.traverse_pagination(url):
+        for key, id in client.get_key(member['login']):
+            yield key, id, member['login']
 
 def get_members(auth_token, github_base_url, org_name, team_name='Owners'):
     client = GithubClient(auth_token, github_base_url)
