@@ -6,15 +6,16 @@ class GithubClient(object):
         self.auth_token = auth_token
         self.github_base_url = github_base_url
 
-    def get_owners_team(self, org_name, team_name):
-        owners_team = None
+    def get_team_info(self, org_name, team_name):
+        team_info = None
         url = '%s/orgs/%s/teams' % (self.github_base_url, org_name)
         for team in self.traverse_pagination(url):
             if team.get('name') == team_name:
-                owners_team = team
-        if not owners_team:
-            raise Exception('Failed to find owners team in org ' + org_name)
-        return owners_team
+                team_info = team
+        if not team_info:
+            raise Exception(
+                'Failed to find team %s in org %s' % (team_name, org_name))
+        return team_info
 
     def traverse_pagination(self, url):
         while url:
@@ -41,6 +42,9 @@ class GithubClient(object):
         for i in result.json():
             yield i['key'], i['id']
 
+    def add_user_to_team(self, username, team_name):
+        pass
+
 def yield_org_keys(auth_token, github_base_url, org_name):
     client = GithubClient(auth_token, github_base_url)
     url = "%s/orgs/%s/members" % (github_base_url, org_name)
@@ -48,8 +52,8 @@ def yield_org_keys(auth_token, github_base_url, org_name):
         for key, id in client.get_key(member['login']):
             yield key, id, member['login']
 
-def get_members(auth_token, github_base_url, org_name, team_name='Owners'):
+def get_members(auth_token, github_base_url, org_name, role='admin'):
     client = GithubClient(auth_token, github_base_url)
-    url = "%s/teams/%d/members" % (
-        github_base_url, client.get_owners_team(org_name, team_name).get('id'))
+    url = "%s/orgs/%s/members?role=admin" % (
+        github_base_url, org_name)
     return (m['login'] for m in client.traverse_pagination(url))

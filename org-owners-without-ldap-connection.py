@@ -8,15 +8,26 @@ GITHUB_BASE_URL = 'https://api.github.com'
 
 
 def print_email_if_available(github_members):
+    missing_ldap_mappings = []
+    users = []
     with ldap_client.LdapClient(LDAP_URL) as lc:
         for user in github_members:
             ldap_user = lc.user_from_github_login(user)
             if ldap_user:
-                print ("Found email %s@spotify.com for user %s"
-                       % (ldap_user, user))
+                users.append(ldap_user + "@spotify.com")
+
+                #print ("Found email %s@spotify.com for user %s"
+                #       % (ldap_user, user))
             else:
-                print "No email found for " + user
+                missing_ldap_mappings.append(user)
+
+    print ", ".join(users)
+
+    if missing_ldap_mappings:
+        print "\nDrop these users from the team (they lack LDAP mapping)"
+        for user in missing_ldap_mappings:
+            print user
 
 if __name__ == '__main__':
     print_email_if_available(github_client.get_members(
-        sys.argv[1], GITHUB_BASE_URL, ORG_NAME, 'spotify-dev'))
+        sys.argv[1], GITHUB_BASE_URL, ORG_NAME))
