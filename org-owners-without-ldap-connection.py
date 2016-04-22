@@ -21,13 +21,16 @@ def print_email_if_available(github_members):
             else:
                 missing_ldap_mappings.append(user)
 
+    print "there are %d users" % len(users)
     print ", ".join(users)
 
     if missing_ldap_mappings:
         print "\nDrop these users from the team (they lack LDAP mapping)"
         for user in missing_ldap_mappings:
             print user
+    else:
+        print "\nNo users lacking LDAP mapping. Yay!"
 
 if __name__ == '__main__':
-    print_email_if_available(github_client.get_members(
-        sys.argv[1], GITHUB_BASE_URL, ORG_NAME))
+    print_email_if_available(
+        github_client.GithubClient(sys.argv[1]).get_members(ORG_NAME, "admin"))

@@ -2,7 +2,7 @@ import requests
 
 
 class GithubClient(object):
-    def __init__(self, auth_token, github_base_url):
+    def __init__(self, auth_token, github_base_url='https://api.github.com'):
         self.auth_token = auth_token
         self.github_base_url = github_base_url
 
@@ -45,6 +45,13 @@ class GithubClient(object):
     def add_user_to_team(self, username, team_name):
         pass
 
+    def get_members(self, org_name, role='all'):
+        url = "%s/orgs/%s/members?role=%s" % (
+            self.github_base_url, org_name, role)
+        return (m['login'] for m in self.traverse_pagination(url))
+
+
+
 def yield_org_keys(auth_token, github_base_url, org_name):
     client = GithubClient(auth_token, github_base_url)
     url = "%s/orgs/%s/members" % (github_base_url, org_name)
@@ -52,8 +59,4 @@ def yield_org_keys(auth_token, github_base_url, org_name):
         for key, id in client.get_key(member['login']):
             yield key, id, member['login']
 
-def get_members(auth_token, github_base_url, org_name, role='admin'):
-    client = GithubClient(auth_token, github_base_url)
-    url = "%s/orgs/%s/members?role=admin" % (
-        github_base_url, org_name)
-    return (m['login'] for m in client.traverse_pagination(url))
+
