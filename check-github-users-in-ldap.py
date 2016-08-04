@@ -48,7 +48,7 @@ def check_github_usernames(github_token):
 
     print_dict_keys_per_value(
         members, ("matching", "to_add_to_github"),
-        ("github", "to_add_to_github")
+        ("github", "github_user_that_quit")
     )
 
 
