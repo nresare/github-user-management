@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2015-2016 Noa Resare
-import sys
-
 from clients import ldap_client
-from clients import github_client
 
-ORG_NAME = 'spotify'
 LDAP_URL = 'ldap://ldap-lon.spotify.net'
 GITHUB_BASE_URL = 'https://api.github.com'
 
@@ -33,7 +29,3 @@ def print_email_if_available(github_members):
             print user
     else:
         print "\nNo users lacking LDAP mapping. Yay!"
-
-if __name__ == '__main__':
-    print_email_if_available(
-        github_client.GithubClient(sys.argv[1]).get_members(ORG_NAME, "admin"))

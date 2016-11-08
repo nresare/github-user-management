@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2015-2016 Noa Resare
 import collections
-import sys
-
 
 from clients import ldap_client
 from clients import github_client
@@ -52,7 +50,3 @@ def check_github_usernames(github_token):
         members, ("matching", "to_add_to_github"),
         ("github", "github_user_that_quit")
     )
-
-
-if __name__ == '__main__':
-    check_github_usernames(sys.argv[1])

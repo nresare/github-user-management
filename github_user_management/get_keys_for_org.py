@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2015-2016 Noa Resare
-import sys
-
 from clients import github_client
 
 
@@ -14,7 +12,3 @@ def main(github_token):
         with open("keys/%s-%s" % (member, id), 'w') as f:
             f.write(key)
             print member
-
-
-if __name__ == '__main__':
-    main(sys.argv[1])

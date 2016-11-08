@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2015-2016 Noa Resare
-import sys
-
 from clients import ldap_client
 from clients import github_client
 
@@ -21,7 +19,3 @@ def check_github_usernames(github_token):
                        % (user, github_user))
             else:
                 print github_user
-
-
-if __name__ == '__main__':
-    check_github_usernames(sys.argv[1])
