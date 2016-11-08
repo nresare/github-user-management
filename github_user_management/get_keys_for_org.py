@@ -1,6 +1,7 @@
+import sys
+
 from clients import github_client
 
-import sys
 
 GITHUB_BASE_URL = 'https://api.github.com'
 

@@ -1,4 +1,5 @@
 import sys
+
 from clients import ldap_client
 from clients import github_client
 
@@ -16,7 +17,7 @@ def print_email_if_available(github_members):
             if ldap_user:
                 users.append(ldap_user + "@spotify.com")
 
-                #print ("Found email %s@spotify.com for user %s"
+                # print ("Found email %s@spotify.com for user %s"
                 #       % (ldap_user, user))
             else:
                 missing_ldap_mappings.append(user)

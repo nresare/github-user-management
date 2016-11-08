@@ -1,6 +1,6 @@
+import collections
 import sys
 
-import collections
 
 from clients import ldap_client
 from clients import github_client
@@ -44,7 +44,7 @@ def check_github_usernames(github_token):
                 members[github_user] = 'to_add_to_github'
             else:
                 members[github_user] = 'matching'
-                #print "matching %s@spotify.com" % user
+                # print "matching %s@spotify.com" % user
 
     print_dict_keys_per_value(
         members, ("matching", "to_add_to_github"),
