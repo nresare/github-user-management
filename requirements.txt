@@ -1,2 +1,2 @@
-requests
-python-ldap
+requests==2.11.1
+python-ldap==2.4.27
