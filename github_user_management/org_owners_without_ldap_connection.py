@@ -1,6 +1,6 @@
 import sys
-from github_user_management import ldap_client
-from github_user_management import github_client
+from clients import ldap_client
+from clients import github_client
 
 ORG_NAME = 'spotify'
 LDAP_URL = 'ldap://ldap-lon.spotify.net'

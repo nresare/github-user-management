@@ -1,6 +1,6 @@
 import sys
 
-from github_user_management import github_client
+from clients import github_client
 
 
 def print_details_for_users(users_filename, token):
