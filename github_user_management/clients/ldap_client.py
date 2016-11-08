@@ -2,12 +2,12 @@
 # Copyright (c) 2015-2016 Noa Resare
 import ldap
 
-LDAP_BASE = 'cn=users,dc=carmen,dc=int,dc=sto,dc=spotify,dc=net'
-
 
 class LdapClient(object):
-    def __init__(self, ldap_url):
+    def __init__(self, ldap_url,
+                 base='cn=users,dc=carmen,dc=int,dc=sto,dc=spotify,dc=net'):
         self.ldap_url = ldap_url
+        self.ldap_base = base
 
     def __enter__(self):
         self.conn = ldap.initialize(self.ldap_url)
@@ -18,7 +18,7 @@ class LdapClient(object):
 
     def user_from_github_login(self, github_login):
         result = self.conn.search_s(
-            LDAP_BASE, ldap.SCOPE_ONELEVEL,
+            self.ldap_base, ldap.SCOPE_ONELEVEL,
             '(githubcomAccount=%s)' % github_login, ('uid',))
         if not result:
             return None
@@ -26,7 +26,7 @@ class LdapClient(object):
 
     def get_github_users(self):
         result = self.conn.search_s(
-            LDAP_BASE, ldap.SCOPE_ONELEVEL,
+            self.ldap_base, ldap.SCOPE_ONELEVEL,
             '(githubcomAccount=*)', ('uid', 'loginShell', 'githubcomAccount')
         )
         for dn, e in result:

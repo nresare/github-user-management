@@ -3,13 +3,10 @@
 from clients import ldap_client
 from clients import github_client
 
-LDAP_URL = 'ldap://ldap-lon.spotify.net'
-GITHUB_BASE_URL = 'https://api.github.com'
 
-
-def check_github_usernames(github_token):
-    gc = github_client.GithubClient(github_token, GITHUB_BASE_URL)
-    with ldap_client.LdapClient(LDAP_URL) as lc:
+def check_github_usernames(github_token, ldap_url, ldap_base, github_url):
+    gc = github_client.GithubClient(github_token, github_url)
+    with ldap_client.LdapClient(ldap_url, ldap_base) as lc:
         for user, shell, github_user in lc.get_github_users():
             if shell == '/dev/null':
                 # skip users with null shell, as they have quit spotify

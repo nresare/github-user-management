@@ -21,38 +21,67 @@ def main():
 
 @main.command(help="Check GitHub usernames from LDAP")
 @click.argument("gh-token", type=click.STRING)
-def add_ldap_users_to_employees(gh_token):
+@click.option("--ldap-url", "-l", type=click.STRING,
+              default="ldap://ldap-lon.spotify.net")
+@click.option("--ldap-base", "-b", type=click.STRING,
+              default="cn=users,dc=carmen,dc=int,dc=sto,dc=spotify,dc=net")
+@click.option("--github-url", "-g", type=click.STRING,
+              default="https://api.github.com")
+def add_ldap_users_to_employees(gh_token, ldap_url, ldap_base, github_url):
     # Doesn't look like this actually adds
-    add_ldap.check_github_usernames(gh_token)
+    add_ldap.check_github_usernames(gh_token, ldap_url, ldap_base, github_url)
 
 
 @main.command(help="Check GitHub users in LDAP")
 @click.argument("gh-token", type=click.STRING)
-def check_github_users_in_ldap(gh_token):
-    check_github.check_github_usernames(gh_token)
+@click.option("--ldap-url", "-l", type=click.STRING,
+              default="ldap://ldap-lon.spotify.net")
+@click.option("--ldap-base", "-b", type=click.STRING,
+              default="cn=users,dc=carmen,dc=int,dc=sto,dc=spotify,dc=net")
+@click.option("--github-url", "-g", type=click.STRING,
+              default="https://api.github.com")
+@click.option("--org", "-o", default="spotify", type=click.STRING)
+def check_github_users_in_ldap(gh_token, ldap_url, ldap_base, github_url, org):
+    check_github.check_github_usernames(
+        gh_token, ldap_url, ldap_base, github_url, org
+    )
 
 
 @main.command(help="Get keys for org")
 @click.argument("gh-token", type=click.STRING)
-def get_keys_for_org(gh_token):
-    get_keys.main(gh_token)
+@click.option("--github-url", "-g", type=click.STRING,
+              default="https://api.github.com")
+@click.option("--org", "-o", default="spotify", type=click.STRING)
+def get_keys_for_org(gh_token, github_url, org):
+    get_keys.main(gh_token, github_url, org)
 
 
 @main.command(help="Details for given users")
 @click.argument("users", type=click.Path(exists=True),
                 default="users_to_remove_from_org.txt")
 @click.argument("gh-token", type=click.STRING)
-def github_details_for_users(users, gh_token):
-    github_details.print_details_for_users(users, gh_token)
+@click.option("--github-url", "-g", type=click.STRING,
+              default="https://api.github.com")
+def github_details_for_users(users, gh_token, github_url):
+    github_details.print_details_for_users(users, gh_token, github_url)
 
 
 @main.command(help="Org owners without a connection in LDAP")
 @click.argument("gh-token", type=click.STRING)
 @click.option("--org", "-o", default="spotify", type=click.STRING)
-def org_owners_without_ldap_connection(gh_token, org):
+@click.option("--ldap-url", "-l", type=click.STRING,
+              default="ldap://ldap-lon.spotify.net")
+@click.option("--ldap-base", "-b", type=click.STRING,
+              default="cn=users,dc=carmen,dc=int,dc=sto,dc=spotify,dc=net")
+@click.option("--domain", "-d", type=click.STRING,
+              default="spotify.com")
+def org_owners_without_ldap_connection(gh_token, org, ldap_url, ldap_base,
+                                       domain):
     gh_client = github_client.GithubClient(gh_token)
     gh_members = gh_client.get_members(org, "admin")
-    org_owners.print_email_if_available(gh_members)
+    org_owners.print_email_if_available(
+        gh_members, ldap_url, ldap_base, domain
+    )
 
 
 @main.command(help="Print given audit log")
