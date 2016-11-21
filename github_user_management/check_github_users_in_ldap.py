@@ -1,12 +1,9 @@
-import sys
-
+# -*- coding: utf-8 -*-
+# Copyright (c) 2015-2016 Noa Resare
 import collections
 
-from github_user_management import ldap_client
-from github_user_management import github_client
-
-LDAP_URL = 'ldap://ldap-lon.spotify.net'
-GITHUB_BASE_URL = 'https://api.github.com'
+from clients import ldap_client
+from clients import github_client
 
 
 def print_dict_keys_per_value(d, exclude, check_existence_for_these):
@@ -26,14 +23,14 @@ def print_dict_keys_per_value(d, exclude, check_existence_for_these):
             print "Good news, category %s is empty!" % cat
 
 
-def check_github_usernames(github_token):
-    gc = github_client.GithubClient(github_token, GITHUB_BASE_URL)
+def check_github_usernames(github_token, ldap_url, ldap_base, github_url, org):
+    gc = github_client.GithubClient(github_token, github_url)
 
     members = dict(
-        map(lambda x: (x.lower(), "github"), gc.get_members("spotify"))
+        map(lambda x: (x.lower(), "github"), gc.get_members(org))
     )
 
-    with ldap_client.LdapClient(LDAP_URL) as lc:
+    with ldap_client.LdapClient(ldap_url, ldap_base) as lc:
         for user, shell, github_user in lc.get_github_users():
             github_user = github_user.lower()
             if shell == '/dev/null':
@@ -44,13 +41,9 @@ def check_github_usernames(github_token):
                 members[github_user] = 'to_add_to_github'
             else:
                 members[github_user] = 'matching'
-                #print "matching %s@spotify.com" % user
+                # print "matching %s@spotify.com" % user
 
     print_dict_keys_per_value(
         members, ("matching", "to_add_to_github"),
         ("github", "github_user_that_quit")
     )
-
-
-if __name__ == '__main__':
-    check_github_usernames(sys.argv[1])
