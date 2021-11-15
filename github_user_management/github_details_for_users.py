@@ -11,6 +11,6 @@ def print_details_for_users(users_filename, token, github_url):
             user = gc.get_user(u)
             email = user["email"]
             if email:
-                print "Email for %s is %s" % (u, email)
+                print ("Email for %s is %s" % (u, email))
             else:
-                print "no email for user " + u
+                print ("no email for user " + u)

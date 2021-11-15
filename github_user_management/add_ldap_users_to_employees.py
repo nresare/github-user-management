@@ -15,4 +15,4 @@ def check_github_usernames(github_token, ldap_url, ldap_base, github_url):
                 print ("ldap user %s doesn't have a valid github user: %s"
                        % (user, github_user))
             else:
-                print github_user
+                print (github_user)
