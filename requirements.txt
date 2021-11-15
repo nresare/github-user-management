@@ -1,6 +1,6 @@
 requests==2.20.0
-python-ldap==2.4.27
-click==6.6
+python-ldap==3.3.0
+click==8.0.3
 # from requests[security]
 cryptography==3.2
 ndg-httpsclient==0.4.2

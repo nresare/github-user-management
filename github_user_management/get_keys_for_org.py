@@ -8,4 +8,4 @@ def main(github_token, github_url, org):
             github_token, github_url, org):
         with open("keys/%s-%s" % (member, id), 'w') as f:
             f.write(key)
-            print member
+            print (member)

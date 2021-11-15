@@ -11,30 +11,30 @@ def print_dict_keys_per_value(d, exclude, check_existence_for_these):
     for k in d:
         by_value[d[k]].append(k)
     printed_categories = []
-    for v in sorted(by_value.iterkeys()):
+    for v in sorted(by_value.keys()):
         if v in exclude:
             continue
-        print v
+        print ("%s (%i)" % (v, len(by_value[v])))
         printed_categories.append(v)
         for k in sorted(by_value[v]):
-            print " " + k
+            print (" " + k)
     for cat in check_existence_for_these:
         if cat not in printed_categories:
-            print "Good news, category %s is empty!" % cat
+            print ("Good news, category %s is empty!" % cat)
 
 
 def check_github_usernames(github_token, ldap_url, ldap_base, github_url, org):
     gc = github_client.GithubClient(github_token, github_url)
 
     members = dict(
-        map(lambda x: (x.lower(), "github"), gc.get_members(org))
+        map(lambda x: (x.lower(), "only_in_github"), gc.get_members(org))
     )
 
     with ldap_client.LdapClient(ldap_url, ldap_base) as lc:
         for user, shell, github_user in lc.get_github_users():
-            github_user = github_user.lower()
-            if shell == '/dev/null':
-                if github_user in members:
+            github_user = github_user.lower().decode('UTF-8')
+            if shell.decode('UTF-8') == '/dev/null':
+                if github_user in members and members[github_user] == 'only_in_github':
                     members[github_user] = 'github_user_that_quit'
                 continue
             if github_user not in members:
@@ -45,5 +45,5 @@ def check_github_usernames(github_token, ldap_url, ldap_base, github_url, org):
 
     print_dict_keys_per_value(
         members, ("matching", "to_add_to_github"),
-        ("github", "github_user_that_quit")
+        ("only_in_github", "github_user_that_quit")
     )
