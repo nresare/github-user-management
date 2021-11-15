@@ -36,6 +36,11 @@ ldap_base = click.option("--ldap-base", "-b", type=click.STRING,
                                   "dc=spotify,dc=net"))
 domain = click.option("--domain", "-d", type=click.STRING,
                       default="spotify.com")
+remove_nonemployee = click.option("--remove-nonemployee", "-r", type=click.BOOL,
+                                  default=False, is_flag=True)
+remove_nonmatching = click.option("--remove-nonmatching", "-r", type=click.BOOL,
+                                  default=False, is_flag=True)
+
 
 
 def apply_params(click_objects):
@@ -60,10 +65,10 @@ def add_ldap_users_to_employees(gh_token, ldap_url, ldap_base, gh_url):
 
 
 @main.command(help="Check GitHub users in LDAP")
-@apply_params([gh_token, ldap_url, ldap_base, gh_url, gh_org])
-def check_github_users_in_ldap(gh_token, ldap_url, ldap_base, gh_url, gh_org):
+@apply_params([gh_token, ldap_url, ldap_base, gh_url, gh_org, remove_nonemployee, remove_nonmatching])
+def check_github_users_in_ldap(gh_token, ldap_url, ldap_base, gh_url, gh_org, remove_nonemployee, remove_nonmatching):
     check_github.check_github_usernames(
-        gh_token, ldap_url, ldap_base, gh_url, gh_org
+        gh_token, ldap_url, ldap_base, gh_url, gh_org, remove_nonemployee, remove_nonmatching
     )
 
 

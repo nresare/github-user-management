@@ -31,6 +31,10 @@ class GithubClient(object):
         return requests.get(url, headers={
             'Authorization': 'token ' + self.auth_token})
 
+    def delete(self, url):
+        return requests.delete(url, headers={
+            'Authorization': 'token ' + self.auth_token})
+
     def get_user(self, username):
         result = self.get("%s/users/%s" % (self.github_base_url, username))
         if result.status_code == 404:
@@ -52,6 +56,12 @@ class GithubClient(object):
         url = "%s/orgs/%s/members?role=%s" % (
             self.github_base_url, org_name, role)
         return (m['login'] for m in self.traverse_pagination(url))
+
+    def remove_member(self, org_name, member_username):
+        url = "%s/orgs/%s/memberships/%s" % (
+            self.github_base_url, org_name, member_username)
+        response = self.delete(url)
+        return response.status_code == 204
 
 
 def yield_org_keys(auth_token, github_base_url, org_name):
