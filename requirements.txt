@@ -1,5 +1,5 @@
 requests==2.20.0
-python-ldap==2.4.27
+python-ldap==3.4.0
 click==6.6
 # from requests[security]
 cryptography==3.2
